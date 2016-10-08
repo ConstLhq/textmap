@@ -1,0 +1,50 @@
+nav.navbar.navbar-default
+  .container-fluid
+    .navbar-header
+      a.navbar-brand(href="/") 文本地址解析
+    .collapse.navbar-collapse
+      -if (user)
+       p.navbar-text.navbar-right
+        span 欢迎您,#{user.name}
+        span &nbsp;|&nbsp;
+        a.navbar-link(href="/logout") 登出
+      -else
+        p.navbar-text.navbar-right
+         a.navbar-link(href="#", data-toggle="modal", data-target="#signupModal") 注册
+         span &nbsp;|&nbsp;
+         a.navbar-link(href="#", data-toggle="modal", data-target="#signinModal") 登录
+.container
+  .row
+  .col-md-4
+    h2=title
+  .col-md-8
+#signupModal.modal.fade
+  .modal-dialog
+    .modal-content
+      form(method="POST", action="/user/signup")
+        .modal-header(style="color:rgb(57,57,57)") 注册
+        .modal-body
+          .form-group
+            label(for="signupName",style="color:rgb(57,57,57)") 用户名
+            input#signupName.form-control(name="name", type="text" ,placeholder="数字字母下划线组合",pattern="[a-zA-Z0-9_\.]+",required,maxlength="15")
+          .form-group
+            label(for="signupPassword",style="color:rgb(57,57,57)") 密码
+            input#signupPassword.form-control(name="password", type="password",maxlength="15")
+        .modal-footer
+          button.btn.btn-default(type="button", data-dismiss="modal") 关闭
+          button.btn.btn-success(type="submit") 注册
+#signinModal.modal.fade
+  .modal-dialog
+    .modal-content
+      form(method="POST", action="/user/signin")
+        .modal-header(style="color:rgb(57,57,57)") 登录
+        .modal-body
+          .form-group
+            label(for="signinName",style="color:rgb(57,57,57)") 用户名
+            input#signinName.form-control(name="name", type="text",placeholder="请输入用户名",pattern="[a-zA-Z0-9_\.]+",required,maxlength="15")
+          .form-group
+            label(for="signinPassword",style="color:rgb(57,57,57)") 密码
+            input#signinPassword.form-control(name="password", type="password")
+        .modal-footer
+          button.btn.btn-default(type="button", data-dismiss="modal") 关闭
+          button.btn.btn-success(type="submit") 登录

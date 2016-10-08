@@ -1,0 +1,197 @@
+extends ../layout
+block content
+    style(type='text/css').
+      #map{
+      margin-top:-40px;
+        margin-left:-20px
+      }
+      #visualization{
+      //- margin-left:-40px
+      }
+    .container-fluid(ng-controller='mapController')
+      #sidebar.sidebar.collapsed
+        // Nav tabs
+        .sidebar-tabs
+          ul(role='tablist')
+            li
+              a(href='#home', role='tab')
+                i.fa.fa-bars
+            li
+              a(href='#profile', role='tab')
+                i.fa.fa-user
+            li
+              a(href='#upload', role='tab')
+                i.fa.fa-upload
+            li
+              a(href='#modify', role='tab')
+                i.fa.fa-pencil-square-o
+            li
+              a(href='#export', role='tab')
+                i.fa.fa-download             
+          ul(role='tablist')
+            li
+              a(href='#settings', role='tab')
+                i.fa.fa-gear
+        // Tab panes
+        .sidebar-content
+          #home.sidebar-pane
+            h1.sidebar-header
+              | sidebar-v2
+              span.sidebar-close
+                i.fa.fa-caret-right          
+            p.lorem
+              | Lorem ipsum dolor sit amet, consetetur sadipscing elitr             
+          #profile.sidebar-pane
+            h1.sidebar-header
+              | 个人中心
+              span.sidebar-close
+                i.fa.fa-caret-right 
+            - var mydoc = JSON.stringify(doc)
+            #userinfo(ng-init="docs= #{mydoc}")
+              table.table
+                thead
+                  tr
+                    th 文件名
+                    th 上传日期
+                    th 操作
+                tbody
+                  tr(ng-repeat="doc in docs.data" )  
+                    td {{doc.originalName}}
+                    th {{doc.meta.createAt}}
+                    td 
+                      a(href="#" ng-click="displayDoc(doc._id,doc.sequence)") 查看            
+          #upload.sidebar-pane
+            h1.sidebar-header
+              | 上传
+              span.sidebar-close
+                i.fa.fa-caret-right
+            #fileupload(ng-controller='upController', nv-file-drop='', uploader='uploader', filters='queueLimit, customFilter')
+              .row-fluid
+                .col-sm-12
+                  br
+                  div(ng-show='uploader.isHTML5') 
+                    .well.my-drop-zone(nv-file-over='', uploader='uploader')
+                      input(type='file', nv-file-select='', uploader='uploader')
+                      h4.text-center 拖放文件到此处
+              .row-fluid
+                .col-sm-12(style='margin-bottom: 40px')
+                          //- h3 上传队列
+                          //- |                     
+                          //- p 队列长度: {{ uploader.queue.length }}
+                          //- |     
+                          table.table
+                            thead
+                              tr
+                                th(width='40%') 文件
+                                //- th(ng-show='uploader.isHTML5') 时序                 
+                                th(ng-show='uploader.isHTML5') 大小
+                                th 状态                                 
+                                th 操作
+                            tbody
+                              tr(ng-repeat='item in uploader.queue')
+                                td
+                                  strong {{ item.file.name }}
+                                //- td
+                                //-   input(type="checkbox"  ng-init="uploader.queue[$index].formData.push({sequence:false})" ng-model="uploader.queue[$index].formData[0].sequence")
+                                td(ng-show='uploader.isHTML5', nowrap='') {{ item.file.size/1024/1024|number:2 }} MB
+                                td.text-center
+                                  span(ng-show='item.isSuccess')
+                                    i.glyphicon.glyphicon-ok
+                                  span(ng-show='item.isCancel')
+                                    i.glyphicon.glyphicon-ban-circle
+                                  span(ng-show='item.isError')
+                                    i.glyphicon.glyphicon-remove
+                                td(nowrap='')
+                                  button.btn.btn-success.btn-xs(title='上传' type='button', ng-click='item.upload()', ng-disabled='item.isReady || item.isUploading || item.isSuccess')
+                                    span.glyphicon.glyphicon-upload
+                                  button.btn.btn-warning.btn-xs(title='取消' type='button', ng-click='item.cancel()', ng-disabled='!item.isUploading')
+                                    span.glyphicon.glyphicon-ban-circle
+                                  button.btn.btn-danger.btn-xs(title='删除' type='button', ng-click='item.remove()')
+                                    span.glyphicon.glyphicon-trash
+                          div
+                            div
+                              | 上传进度:
+                              .progress(style='')
+                                .progress-bar(role='progressbar', ng-style="{ 'width': uploader.progress + '%' }")
+                            
+                            //增加文件类型选项
+                            .form-group
+                              label(for="filetype" ) 选择文件类型
+                              select(class="form-control"  id="filetype" name="format" ng-init="uploader.queue[0].formData.push({filetype:'none'})" ng-model="uploader.queue[0].formData[0].filetype" ng-disabled="uploader.queue.length==0")
+                                option(class="" value="") 请选择文件类型
+                                option(class="" value="txt") 文本文件
+                                option(class="" value="geojson") Geojson文件
+                                option(class="" value="csv") CSV文件
+                            .form-group
+                              label(for="timesequence" class="col-sm-2") 时间序列
+                              input(type="checkbox"  class = "form-inline" ng-init="uploader.queue[0].formData.push({sequence:false})" ng-model="uploader.queue[0].formData[0].sequence" ng-disabled="uploader.queue.length==0")
+                            button.btn.btn-success.btn-s(type='button', ng-click='uploader.uploadAll()', ng-disabled='!uploader.getNotUploadedItems().length ||uploader.queue[0].formData[0].filetype=="none"')
+                              span.glyphicon.glyphicon-upload
+                              |  上传
+                            |                         
+                            button.btn.btn-warning.btn-s(type='button', ng-click='uploader.cancelAll()', ng-disabled='!uploader.isUploading')
+                              span.glyphicon.glyphicon-ban-circle
+                              |  取消
+                            |                         
+                            button.btn.btn-danger.btn-s(type='button', ng-click='uploader.clearQueue()', ng-disabled='!uploader.queue.length')
+                              span.glyphicon.glyphicon-trash
+                              |  删除  
+          #modify.sidebar-pane
+            h1.sidebar-header
+              | 编辑
+              span.sidebar-close
+                i.fa.fa-caret-right
+            br
+            #edit
+              //- textarea.form-control(rows="8" ng-model="originContent")
+              //- br
+              //- .btn-group
+              //-   btn.btn.btn-xs.btn-primary 解析
+              //-   btn.btn.btn-xs.btn-info 还原
+              //-   btn.btn.btn-xs.btn-danger 保存
+              .edit(ng-controller="editController" )
+                color-text
+                form#form(ng-show = "addLocShow")
+                    label(for="Name") 原地名
+                    input#Name.form-control(name="name", type="text",ng-model="edits.poiName" readonly)
+                    label(for="Name") 详细地名
+                    input#Name.form-control(name="exinfo", type="text",ng-model="edits.exInfo",placeholder="提供详情提高匹配精度")
+                    label(for="lat") 纬度
+                    input#lat.form-control(name="lat", type="text",ng-model="edits.poiLat")
+                    label(for="lng") 经度
+                    input#lng.form-control(name="lng", type="text",ng-model="edits.poiLng")
+                    button.btn.btn-primary(type="buttton" ng-click="editingQuery()") 匹配
+                    button.btn.btn-success(type="buttton" ng-click="editingOK()") 确定
+                    button.btn.btn-default(type="button",ng-click="editingCancel()") 取消
+          #export.sidebar-pane
+            h1.sidebar-header
+              | 导出
+              span.sidebar-close
+                i.fa.fa-caret-right
+            br
+            ul.nav.nav-tabs
+              li(role='presentation' ng-class="{'active':current_tag==1}")
+                a(ng-click="showTag(1)") geojson
+              li(role='presentation' ng-class="{'active':current_tag==2}")
+                a(ng-click="showTag(2)") table
+            #jsonviewer(ng-show="current_tag==1")
+              #geog(style="overflow:auto")
+            #tableviewer(ng-show="current_tag==2")
+              #inner_tbl
+            .btn-group
+              btn.btn.btn-default.btn-primary 解析
+              btn.btn.btn-default.btn-info 导出
+          #settings.sidebar-pane
+            h1.sidebar-header
+              | Settings
+              span.sidebar-close
+                i.fa.fa-caret-right
+      map#map.col-sm-12.sidebar-map
+      .row-fluid(ng-show ="showTimeline")
+        time-line#visualization.col-sm-12
+    //- script(type='text/javascript', src='/js/index.js')
+    script(type='text/javascript',src='js/ng/controllers.js')
+    script(type='text/javascript',src='js/prettyjson.js')
+    script(type='text/javascript',src='js/viewer.js')
+    script(type='text/javascript',src='js/test.js')
+ 

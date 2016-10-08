@@ -1,0 +1,21 @@
+#form{
+    /*position: absolute;*/
+   top: 50px;
+    
+    right:0px;
+    
+    width: 100%;
+    /*background: #999999*/
+    
+}
+#visualization{
+	position: absolute;
+	bottom: 0px;
+	left:0px;
+
+	width:100%;
+}
+
+.label{
+	display: inline-block;
+}

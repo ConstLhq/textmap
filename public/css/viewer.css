@@ -1,0 +1,103 @@
+.fill,body,html{
+
+height:100%
+}
+#json_vl,.td_head,.td_row_even,.td_row_odd{
+
+font-size:small
+}
+.td_head{
+
+float:left
+}
+.fill{
+
+min-height:100%
+}
+#json_vl{
+font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace
+}
+#widget{
+width:100%
+}
+.top_size{
+height:51px
+}
+
+#inner_text{
+display:block;
+position:absolute;
+height:auto;
+bottom:0;
+top:0;
+left:0;
+right:0;
+margin-top:51px;
+margin-bottom:0
+}
+
+#inner_tbl{
+padding-left:2px
+}
+.td_row_even{
+padding:2px;
+background-color:#F6F4F0
+}
+.td_row_odd{
+padding:2px;
+background-color:#FFF
+}
+.td_head{
+padding:2px;
+font-weight:700
+}
+p,td,textarea,th{
+font-size:1em
+}
+table,td,th{
+border:1px solid gray
+}
+textarea{
+-moz-box-sizing:border-box;
+-webkit-box-sizing:border-box;
+box-sizing:border-box;
+display:block;
+width:100%;
+height:100%;
+margin:0;
+padding:4px;
+border:1px solid #333;
+overflow-y:auto;
+overflow-x:hidden
+}
+*,html{
+font-family:Verdana,Arial,Helvetica,sans-serif
+}
+
+img{
+border:none
+}
+p{
+margin:0 0 1em
+}
+table{
+font-size:100%
+}
+li input{
+position:absolute;
+left:0;
+margin-left:0;
+opacity:0;
+z-index:2;
+cursor:pointer;
+height:1em;
+width:1em;
+top:0
+}
+li input+ol{
+background:url(http://www.thecssninja.com/demo/css_tree/toggle-small-expand.png)40px -3px no-repeat;
+margin:-20px 0 0 -44px;
+height:1em;
+padding:1.563em 0 0 80px
+}
+
